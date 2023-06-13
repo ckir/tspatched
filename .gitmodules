@@ -1,0 +1,3 @@
+[submodule "vendor/antsy"]
+	path = vendor/antsy
+	url = https://code.lag.net/robey/antsy.git
