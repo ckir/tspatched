@@ -13,23 +13,24 @@ jobs:
       - name: Iterate packages
         run: >
           packages='${{ vars.PACKAGES }}'
+          cd "$GITHUB_WORKSPACE"
 
           for obj in $(echo "$packages" | jq -r '.[] | {name: .name, url: .url}
           | @base64'); do
             name=$(echo "$obj" | base64 --decode | jq -r '.name')
             url=$(echo "$obj" | base64 --decode | jq -r '.url')
             echo "Name: $name, Url: $url"
-            if [ -d "$GITHUB_WORKSPACE/packages/$name" ]; then
+            if [ -d "packages/$name" ]; then
               echo "Submodule [$name] exists"
               continue
             else
               echo "Submodule [$name] does not exist"
             fi
-            git submodule add $url $GITHUB_WORKSPACE/packages/$name
+            git submodule add $url packages/$name
 
             # Set the path to the destination directory
-            dest_path="$GITHUB_WORKSPACE/local/$name"
-            if [ -d "$GITHUB_WORKSPACE/local/$name" ]; then
+            dest_path="local/$name"
+            if [ -d "local/$name" ]; then
               echo "Local folder for [$dest_path] exists"
               continue
             else
@@ -37,7 +38,7 @@ jobs:
             fi
             mkdir $dest_path
 
-            repo_path="$GITHUB_WORKSPACE/packages/$name"
+            repo_path="packages/$name"
             set -x
             cd "$repo_path"
             # Use git archive to create a tar archive of the latest commit
@@ -46,9 +47,7 @@ jobs:
             cd $GITHUB_WORKSPACE
 
           done
-
-
-          cd "$GITHUB_WORKSPACE" && tree && git add .
+          cd "$GITHUB_WORKSPACE" && git add .
 
       - name: Commit changes
         run: |
