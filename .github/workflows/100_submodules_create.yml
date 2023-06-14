@@ -11,9 +11,9 @@ jobs:
           submodules: true
           fetch-depth: 0 # otherwise, there would be errors pushing refs to the destination repository.
       - name: Iterate packages
-        run: >
+        run: |
           packages='${{ vars.PACKAGES }}'
-          
+
           set -x
           cd "$GITHUB_WORKSPACE"
 
