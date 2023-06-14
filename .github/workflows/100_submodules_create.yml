@@ -11,6 +11,5 @@ jobs:
 
        - name: Iterate packages
          run: |
-            echo "$env"
             packages=${{ vars.PACKAGES }}
             echo $packages
