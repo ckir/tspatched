@@ -25,16 +25,23 @@ jobs:
               else
                 echo "Submodule [$name] does not exist"
               fi
-              pwd=$(pwd)
-
               git submodule add $url $GITHUB_WORKSPACE/packages/$name
-              
-              repo_path="$GITHUB_WORKSPACE/packages/$name"
-              cd $repo_path
+
               # Set the path to the destination directory
               dest_path="$GITHUB_WORKSPACE/local/$name"
+              if [ -d "$GITHUB_WORKSPACE/packages/$name" ]; then
+                echo "Local folder for [$dest_path] exists"
+                continue
+              else
+                echo "Local folder for [$name] does not exist"
+              fi
+              mkdir $dest_path
+
+              repo_path="$GITHUB_WORKSPACE/packages/$name"
+              cd $repo_path
               # Use git archive to create a tar archive of the latest commit
               git archive --format tar HEAD | tar -x -C "$dest_path" --strip-components=1 --exclude='.git'
               echo "Latest commit of [$name] copied to $dest_path"
+              cd $GITHUB_WORKSPACE
 
             done
