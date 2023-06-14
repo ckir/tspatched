@@ -1,47 +1,55 @@
 name: Create Submodules
-on:
-    workflow_dispatch
-
+'on': workflow_dispatch
 jobs:
   create_submodules:
     runs-on: ubuntu-latest
     steps:
-       - name: Checkout repository
-         uses: actions/checkout@v3
-         with:
-            submodules: true
-            fetch-depth: 0         
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          submodules: true
+          fetch-depth: 0
+      - name: Iterate packages
+        run: >
+          packages='${{ vars.PACKAGES }}'
 
-       - name: Iterate packages
-         run: |
-            packages='${{ vars.PACKAGES }}'
-            for obj in $(echo "$packages" | jq -r '.[] | {name: .name, url: .url} | @base64'); do
-              name=$(echo "$obj" | base64 --decode | jq -r '.name')
-              url=$(echo "$obj" | base64 --decode | jq -r '.url')
-              echo "Name: $name, Url: $url"
-              if [ -d "$GITHUB_WORKSPACE/packages/$name" ]; then
-                echo "Submodule [$name] exists"
-                continue
-              else
-                echo "Submodule [$name] does not exist"
-              fi
-              git submodule add $url $GITHUB_WORKSPACE/packages/$name
+          for obj in $(echo "$packages" | jq -r '.[] | {name: .name, url: .url}
+          | @base64'); do
+            name=$(echo "$obj" | base64 --decode | jq -r '.name')
+            url=$(echo "$obj" | base64 --decode | jq -r '.url')
+            echo "Name: $name, Url: $url"
+            if [ -d "$GITHUB_WORKSPACE/packages/$name" ]; then
+              echo "Submodule [$name] exists"
+              continue
+            else
+              echo "Submodule [$name] does not exist"
+            fi
+            git submodule add $url $GITHUB_WORKSPACE/packages/$name
 
-              # Set the path to the destination directory
-              dest_path="$GITHUB_WORKSPACE/local/$name"
-              if [ -d "$GITHUB_WORKSPACE/packages/$name" ]; then
-                echo "Local folder for [$dest_path] exists"
-                continue
-              else
-                echo "Local folder for [$name] does not exist"
-              fi
-              mkdir $dest_path
+            # Set the path to the destination directory
+            dest_path="$GITHUB_WORKSPACE/local/$name"
+            if [ -d "$GITHUB_WORKSPACE/packages/$name" ]; then
+              echo "Local folder for [$dest_path] exists"
+              continue
+            else
+              echo "Local folder for [$name] does not exist"
+            fi
+            mkdir $dest_path
 
-              repo_path="$GITHUB_WORKSPACE/packages/$name"
-              cd $repo_path
-              # Use git archive to create a tar archive of the latest commit
-              git archive --format tar HEAD | tar -x -C "$dest_path" --strip-components=1 --exclude='.git'
-              echo "Latest commit of [$name] copied to $dest_path"
-              cd $GITHUB_WORKSPACE
+            repo_path="$GITHUB_WORKSPACE/packages/$name"
+            cd $repo_path
+            # Use git archive to create a tar archive of the latest commit
+            git archive --format tar HEAD | tar -x -C "$dest_path" --strip-components=1 --exclude='.git'
+            echo "Latest commit of [$name] copied to $dest_path"
+            cd $GITHUB_WORKSPACE
 
-            done
+          done
+      - name: Commit changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git commit -m "Add submodules" -a
+      - name: Push changes
+        uses: ad-m/github-push-action@v0.6.0
+        with:
+          github_token: '${{ secrets.GITHUB_TOKEN }}'
