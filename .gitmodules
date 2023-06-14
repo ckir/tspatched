@@ -1,0 +1,6 @@
+[submodule "/home/runner/work/tspatched/tspatched/packages/antsy"]
+	path = /home/runner/work/tspatched/tspatched/packages/antsy
+	url = https://code.lag.net/robey/antsy.git
+[submodule "/home/runner/work/tspatched/tspatched/packages/grid-layout"]
+	path = /home/runner/work/tspatched/tspatched/packages/grid-layout
+	url = https://github.com/welefen/grid-layout.git
