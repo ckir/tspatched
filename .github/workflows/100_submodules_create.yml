@@ -28,7 +28,7 @@ jobs:
 
             # Set the path to the destination directory
             dest_path="$GITHUB_WORKSPACE/local/$name"
-            if [ -d "$GITHUB_WORKSPACE/packages/$name" ]; then
+            if [ -d "$GITHUB_WORKSPACE/local/$name" ]; then
               echo "Local folder for [$dest_path] exists"
               continue
             else
