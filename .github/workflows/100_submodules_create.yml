@@ -15,10 +15,10 @@ jobs:
           packages='${{ vars.PACKAGES }}'
 
           set -x
-          cd "$GITHUB_WORKSPACE"
-
+          
           for obj in $(echo "$packages" | jq -r '.[] | {name: .name, url: .url}
           | @base64'); do
+            cd "$GITHUB_WORKSPACE"
             name=$(echo "$obj" | base64 --decode | jq -r '.name')
             url=$(echo "$obj" | base64 --decode | jq -r '.url')
             echo "Name: $name, Url: $url"
@@ -36,17 +36,15 @@ jobs:
               echo "Local folder for [$dest_path] exists"
               continue
             else
-              echo "Local folder for [$name] does not exist"
+              echo "Local folder for [$name] does not exist. Creating"
+              mkdir "$GITHUB_WORKSPACE/$dest_path/"
             fi
-            mkdir $dest_path
-
+            
             repo_path="packages/$name"
-
             cd "$repo_path"
             # Use git archive to create a tar archive of the latest commit
-            git archive --format tar HEAD | tar -x -C "$dest_path" --strip-components=1 --exclude='.git'
+            git archive --format tar HEAD | tar -x -C "$GITHUB_WORKSPACE/$dest_path" --strip-components=1 --exclude='.git'
             echo "Latest commit of [$name] copied to $dest_path"
-            cd $GITHUB_WORKSPACE
 
           done
           cd "$GITHUB_WORKSPACE" && git add .
