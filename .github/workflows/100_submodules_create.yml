@@ -45,6 +45,10 @@ jobs:
             cd $GITHUB_WORKSPACE
 
           done
+
+          cd $GITHUB_WORKSPACE
+          git submodule update --init --recursive
+          git add .
       - name: Commit changes
         run: |
           git config --local user.email "action@github.com"
