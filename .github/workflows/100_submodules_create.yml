@@ -22,4 +22,16 @@ jobs:
               else
                 echo "Submodule [$name] does not exist"
               fi
+              pwd=$(pwd)
+
+              git submodule add $url packages/$name
+              
+              repo_path="packages/$name"
+              cd repo_path
+              # Set the path to the destination directory
+              dest_path="$pwd/local/$name"
+              # Use git archive to create a tar archive of the latest commit
+              git archive --format tar HEAD | tar -x -C "$dest_path" --strip-components=1 --exclude='.git'
+              echo "Latest commit of [$name] copied to $dest_path"
+
             done
