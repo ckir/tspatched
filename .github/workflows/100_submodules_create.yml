@@ -11,5 +11,6 @@ jobs:
 
        - name: Iterate packages
          run: |
-            packages=${{ fromJSON(env.PACKAGES) }}
+            echo "$env"
+            packages=${{ env.PACKAGES }}
             echo $packages
