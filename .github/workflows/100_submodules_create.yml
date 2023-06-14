@@ -47,7 +47,7 @@ jobs:
 
           done
 
-          ls -d "$GITHUB_WORKSPACE/*"
+          ls -d *
 
           cd "$GITHUB_WORKSPACE" && cat .gitmodules && git submodule update --init --recursive && git add .
 
