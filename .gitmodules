@@ -1,1 +1,7 @@
 
+[submodule "packages/antsy"]
+	path = packages/antsy
+	url = https://code.lag.net/robey/antsy.git
+[submodule "packages/grid-layout"]
+	path = packages/grid-layout
+	url = https://github.com/welefen/grid-layout.git
