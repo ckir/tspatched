@@ -13,6 +13,8 @@ jobs:
       - name: Iterate packages
         run: >
           packages='${{ vars.PACKAGES }}'
+          
+          set -x
           cd "$GITHUB_WORKSPACE"
 
           for obj in $(echo "$packages" | jq -r '.[] | {name: .name, url: .url}
@@ -39,7 +41,7 @@ jobs:
             mkdir $dest_path
 
             repo_path="packages/$name"
-            set -x
+
             cd "$repo_path"
             # Use git archive to create a tar archive of the latest commit
             git archive --format tar HEAD | tar -x -C "$dest_path" --strip-components=1 --exclude='.git'
