@@ -16,4 +16,10 @@ jobs:
               name=$(echo "$obj" | base64 --decode | jq -r '.name')
               url=$(echo "$obj" | base64 --decode | jq -r '.url')
               echo "Name: $name, Url: $url"
+              if [ -d "packages/$name" ]; then
+                echo "Submodule [$name] exists"
+                continue
+              else
+                echo "Submodule [$name] does not exist"
+              fi
             done
