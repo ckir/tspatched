@@ -11,7 +11,7 @@ jobs:
 
        - name: Iterate packages
          run: |
-            packages=${{ vars.PACKAGES }}
+            packages='${{ vars.PACKAGES }}'
             for obj in $(echo "$packages" | jq -r '.[] | {name: .name, url: .url} | @base64'); do
               name=$(echo "$obj" | base64 --decode | jq -r '.name')
               url=$(echo "$obj" | base64 --decode | jq -r '.url')
