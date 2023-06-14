@@ -1,0 +1,15 @@
+name: Create Submodules
+on:
+    workflow_dispatch
+
+jobs:
+  create_submodules:
+    runs-on: ubuntu-latest
+    steps:
+       - name: Checkout repository
+         uses: actions/checkout@v2
+
+       - name: Iterate packages
+         run: |
+            packages=${{ fromJSON(env.PACKAGES) }}
+            echo $packages
