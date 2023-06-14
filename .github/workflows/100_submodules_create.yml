@@ -12,5 +12,5 @@ jobs:
        - name: Iterate packages
          run: |
             echo "$env"
-            packages=${{ env.PACKAGES }}
+            packages=${{ vars.PACKAGES }}
             echo $packages
