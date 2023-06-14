@@ -47,9 +47,8 @@ jobs:
 
           done
 
-          find . -name "*"
 
-          cd "$GITHUB_WORKSPACE" && cat .gitmodules && git submodule foreach git pull origin master && git add .
+          cd "$GITHUB_WORKSPACE" && tree && git add .
 
       - name: Commit changes
         run: |
