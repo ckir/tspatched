@@ -27,7 +27,7 @@ jobs:
               git submodule add $url packages/$name
               
               repo_path="packages/$name"
-              cd repo_path
+              cd $repo_path
               # Set the path to the destination directory
               dest_path="$pwd/local/$name"
               # Use git archive to create a tar archive of the latest commit
