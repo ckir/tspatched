@@ -7,7 +7,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
        - name: Checkout repository
-         uses: actions/checkout@v2
+         uses: actions/checkout@v3
+         with:
+            submodules: true
+            fetch-depth: 0         
 
        - name: Iterate packages
          run: |
@@ -16,7 +19,7 @@ jobs:
               name=$(echo "$obj" | base64 --decode | jq -r '.name')
               url=$(echo "$obj" | base64 --decode | jq -r '.url')
               echo "Name: $name, Url: $url"
-              if [ -d "packages/$name" ]; then
+              if [ -d "$GITHUB_WORKSPACE/packages/$name" ]; then
                 echo "Submodule [$name] exists"
                 continue
               else
@@ -24,12 +27,12 @@ jobs:
               fi
               pwd=$(pwd)
 
-              git submodule add $url packages/$name
+              git submodule add $url $GITHUB_WORKSPACE/packages/$name
               
-              repo_path="packages/$name"
+              repo_path="$GITHUB_WORKSPACE/packages/$name"
               cd $repo_path
               # Set the path to the destination directory
-              dest_path="$pwd/local/$name"
+              dest_path="$GITHUB_WORKSPACE/local/$name"
               # Use git archive to create a tar archive of the latest commit
               git archive --format tar HEAD | tar -x -C "$dest_path" --strip-components=1 --exclude='.git'
               echo "Latest commit of [$name] copied to $dest_path"
